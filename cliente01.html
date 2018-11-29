@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+</head>
+<body>
+
+<div class="jumbrotom">
+    <div class="row">
+        <div class="col-md-5" >
+                <h2>Formulario de registro</h2>
+    <div class="form-group">
+        <form >
+        <label for="">Id:</label>
+        <input type="number"  id="Id" placeholder="Coloque un numero.." class="form-control" required>
+
+        <label for="">Nombre:</label>
+        <input type="text"  id="Nombres" placeholder="Digite solo los nombres..."class="form-control" required>
+
+        <label for="">Apellidos</label>
+        <input type="text" id="Apellidos" placeholder="Digite los apellidos..." class="form-control" >
+
+        <label for="">Edad</label>
+        <input type="number" id="Edad" placeholder="Digite Edad..." class="form-control" required >
+
+        <label for="">nacimiento</label>
+        <input type="date"  id="Fecha_Nacimiento" class="form-control" required>
+
+        <label for="">Grado</label>
+        <input type="text" id="Grado" placeholder="Digite grado actual..." class="form-control" required >
+        
+        <br>
+        <input type="button" id="Guardar" value="Guardar" class="btn btn-primary">
+    </form>
+    </div>
+        </div>
+        <div class="col-md-6" >
+      
+    <h1>Listado de Estudiantes.</h1>
+   
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Edad</th>
+                    <th>nacimiento</th>
+                    <th>Grado</th>
+                    <th>
+                        Herramientas
+                     
+                    </th>
+                </tr>
+                
+            </thead>
+    
+            <tbody id="resultado">
+                     
+            </tbody>
+           
+            
+        </table>
+       
+   
+</div> 
+        </div>
+
+    </div>
+
+    <script>
+        $("document").ready(iniciar);
+//guardar
+        function iniciar() {
+           $("#Guardar").click(guardar);
+            $.ajax({
+                method: "Get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "http://localhost:62366/api/values",
+                success: procesar,
+                error: error
+            });
+            return false;
+        }
+
+
+        function procesar(data) {
+            var rows;
+            for (i = 0; i < data.length; i++) {
+                rows = rows+" <tr><td>"+ data[i].Nombres + "</td> <td>" + data[i].Apellidos + "</td><td>"+ data[i].Edad + "</td><td>" + data[i].Fecha_Nacimiento + "</td><td>" + data[i].Grado + "</td>"+"<td><button class='btn btn-danger' id='Eliminar' value='Eliminar'>Eliminar</button>"
+                    +"<button class='btn btn-warning' id='Modificar' value='Modificar'>Modificar</button></td>"+"</tr>";
+            }
+            $("#resultado").html(rows);
+         }
+
+        function error() {
+            alert("Error");
+            $("#resultado").html("<h2>Error de peticion</h2>");
+        }
+
+        function guardar(){
+            //recolectar informacion
+            var id=$("#Id").val();
+            var Nombres=$("#Nombres").val();
+            var Apellidos=$("#Apellidos").val();
+            var Edad=$("#Edad").val();
+            var Fecha_Nacimiento=$("#Fecha_Nacimiento").val();
+            var Grado=$("#Grado").val();
+            
+
+            //realizando la peticion para guardar
+            $.ajax({
+                method: "Post",
+                data:{
+                        id:id,
+                        Nombres:Nombres,
+                        Apellidos:Apellidos,
+                        Edad:Edad,
+                        Fecha_Nacimiento:Fecha_Nacimiento,
+                        Grado:Grado
+                    },
+                url: "http://localhost:62366/api/values",
+                success: procesarGuardarr,
+                error:errorGuardar
+
+            });
+
+        }
+        function procesarGuardarr(data){
+
+          //  if(data==1){
+                alert("Procesado");
+                iniciar();
+          /*  }else{
+                alert("No Procesado");
+            }*/
+          
+        }
+        function errorGuardar(){
+            alert("Error al Guardar");
+        }
+///////////////////////////////////////////////////////////////////////////////
+function iniciar() {
+           $("#Eliminar").click(eliminar);
+            $.ajax({
+                method: "Get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "http://localhost:62366/api/values",
+                success: procesar,
+                error: error
+            });
+            return false;
+        }
+        function eliminar(){
+            //recolectar informacion
+            var id=$("#Id").val();
+            var Nombres=$("#Nombres").val();
+            var Apellidos=$("#Apellidos").val();
+            var Edad=$("#Edad").val();
+            var Fecha_Nacimiento=$("#Fecha_Nacimiento").val();
+            var Grado=$("#Grado").val();
+            
+
+            //realizando la peticion para eliminar
+            $.ajax({
+                method: "Post",
+                data:{
+                        id:id,
+                        Nombres:Nombres,
+                        Apellidos:Apellidos,
+                        Edad:Edad,
+                        Fecha_Nacimiento:Fecha_Nacimiento,
+                        Grado:Grado
+                    },
+                url: "http://localhost:62366/api/values",
+                success: procesarelimi,
+                error:errorelimi
+
+            });
+
+        }
+        function procesarelimi(data){
+
+//  if(data==1){
+      alert("Eliminado");
+      iniciar();
+/*  }else{
+      alert("No Procesado");
+  }*/
+
+}
+function errorelimi(){
+  alert("Error al Eliminar");
+}
+
+    </script>
+</body>
+</html>
